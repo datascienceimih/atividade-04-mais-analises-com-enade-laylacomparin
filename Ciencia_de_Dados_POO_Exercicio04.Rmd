@@ -201,7 +201,7 @@ correnda1
 
 2.  Comente os resultados (nível *medium*)
 
-R: Como testamos o nível de associação de variáveis categóricas, vamos usar o teste qui-quadrado. Nós vemos no resultado que o p-value é menor que o nível de significância 0,05 e que temos um alto valor para o qui-quadrado. Portanto, rejeitamos a hipóstese nula e concluimos que a renda e a cor/raça têm uma associação significante.
+R: Neylson.. Eu peguei esse teste de cima, porque no site https://rpubs.com/gomes555/correlacao estava falando sobre como testar a correlação de duas variáveis Nominais (Factor).. Só que de acordo com as aulas de Prob e Estatistica, a correlação só pode ficar entre -1 e 1.. E a minha ficou com 2. Acho que fiz algo errado.. Dá um help ai. :) 
 
 3.  Verifique a variável categoria administrativa da IES no dicionário
 de variáveis. Recategorize a variável em uma binária: “Pública e
