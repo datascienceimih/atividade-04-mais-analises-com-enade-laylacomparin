@@ -1,0 +1,229 @@
+---
+title: "PROJETO INTEGRADOR - Exercício 4"
+data: "10 de abril de 2018"
+output: html_notebook 
+---
+  
+```{r}
+install.packages(c("readr","dplyr","descr", "curl"))
+library(readr) # Carrega o pacote 
+library(dplyr) # Carrega o pacote
+library(descr) # Carrega o pacote 
+library(curl) # Carrega o pacote 
+
+enade14 <- read_csv2("https://raw.githubusercontent.com/neylsoncrepalde/introducao_ao_r/master/dados/enade_2014_amostra.csv")
+```
+
+## Exercícios:
+
+1.  Extraia a média, a mediana, mínimo, máximo, variância e desvio padrão da idade para todos os alunos da nossa amostra aleatória.
+
+```{r}
+
+summary(enade14$nu_idade)
+var(enade14$nu_idade) # Variância
+sd(enade14$nu_idade) # Desvio padrão
+boxplot(enade14$nu_idade,         
+        col = "#FF0088",
+        main = "Boxplot da Idade - Enade 2014", 
+        ylab = "Notas")
+
+```
+
+
+2.  Elabore uma tabela de frequência da quantidade de alunos por sexo.
+Corrija a variável caso alguma categoria esteja “sobrando”.
+
+```{r}
+
+enade14$sexo <- enade14$tp_sexo
+enade14$sexo[enade14$sexo == "N"] <- NA # Remove as respostas NA
+freq(enade14$sexo[!is.na(enade14$sexo)], col="#FF0088", main = "Sexo")
+
+```
+
+3.  Agora extraia a média, a mediana, mínimo, máximo, variância e desvio
+padrão da idade para cada categoria de sexo. Exiba os mesmos
+resultados com um gráfico.
+
+```{r}
+
+#Masculino
+
+enade14$masculino <- ifelse(enade14$sexo == "M", 1, 0) 
+summary(enade14$nu_idade[enade14$masculino == 1]) 
+var(enade14$nu_idade[enade14$masculino == 1], na.rm = T)
+sd(enade14$nu_idade[enade14$masculino == 1], na.rm = T)
+boxplot(enade14$nu_idade[enade14$masculino == 1],
+        col = "#FF0088",
+        main = "Boxplot da Idade (Masculino) - Enade 2014", 
+        ylab = "Idade")
+
+#Feminino
+
+summary(enade14$nu_idade[enade14$masculino == 0]) 
+var(enade14$nu_idade[enade14$masculino == 0], na.rm = T)
+sd(enade14$nu_idade[enade14$masculino == 0], na.rm = T)
+boxplot(enade14$nu_idade[enade14$masculino == 0],
+        col = "#FF0088",
+        main = "Boxplot da Idade (Feminino) - Enade 2014", 
+        ylab = "Idade")
+
+```
+
+4.  Agora extraia a média, a mediana, mínimo, máximo, variância e desvio
+padrão da idade para cada categoria de cor/raça. Exiba os mesmos
+resultados com um gráfico.
+
+```{r}
+
+enade14$coraca <- enade14$qe_i2
+
+#Brancos
+
+summary(enade14$nu_idade[enade14$coraca == "a"])
+var(enade14$nu_idade[enade14$coraca == "a"], na.rm = T)
+sd(enade14$nu_idade[enade14$coraca == "a"], na.rm = T)
+boxplot(enade14$nu_idade[enade14$coraca == "a"],
+        col = "#FF0088",
+        main = "Boxplot da Idade (Brancos) - Enade 2014", 
+        ylab = "Idade")
+
+#Negros
+
+summary(enade14$nu_idade[enade14$coraca == "b"])
+var(enade14$nu_idade[enade14$coraca == "b"], na.rm = T)
+sd(enade14$nu_idade[enade14$coraca == "b"], na.rm = T)
+boxplot(enade14$nu_idade[enade14$coraca == "b"],
+        col = "#FF0088",
+        main = "Boxplot da Idade (Negros) - Enade 2014", 
+        ylab = "Idade")
+
+#Pardos
+
+summary(enade14$nu_idade[enade14$coraca == "c"])
+var(enade14$nu_idade[enade14$coraca == "c"], na.rm = T)
+sd(enade14$nu_idade[enade14$coraca == "c"], na.rm = T)
+boxplot(enade14$nu_idade[enade14$coraca == "c"],
+        col = "#FF0088",
+        main = "Boxplot da Idade (Pardos) - Enade 2014", 
+        ylab = "Idade")
+
+#Amarelos
+
+summary(enade14$nu_idade[enade14$coraca == "d"])
+var(enade14$nu_idade[enade14$coraca == "d"], na.rm = T)
+sd(enade14$nu_idade[enade14$coraca == "d"], na.rm = T)
+boxplot(enade14$nu_idade[enade14$coraca == "d"],
+        col = "#FF0088",
+        main = "Boxplot da Idade (Amarelos) - Enade 2014", 
+        ylab = "Idade")
+
+#Indigenas
+
+summary(enade14$nu_idade[enade14$coraca == "e"])
+var(enade14$nu_idade[enade14$coraca == "e"], na.rm = T)
+sd(enade14$nu_idade[enade14$coraca == "e"], na.rm = T)
+boxplot(enade14$nu_idade[enade14$coraca == "e"],
+        col = "#FF0088",
+        main = "Boxplot da Idade (Brancos) - Enade 2014", 
+        ylab = "Idade")
+
+## Trazendo todos juntos:
+
+ggplot(data=enade14, aes(x=enade14$coraca, y=enade14$nu_idade))+
+  geom_boxplot(fill = "#FF0088", colour = "black")+
+  labs(title = "Boxplot das idades dos alunos vs. cor/raça - ENADE 2014",
+       x = "Cor/Raça",
+       y = "Idade")
+
+```
+
+5.  Verifique a distribuição de alunos por região do país. Exiba uma
+tabela de frequências e um gráfico.
+
+```{r}
+
+enade14$regiao <- enade14$co_regiao_curso
+
+enade14$regiao[enade14$regiao == 1] = "Norte"
+enade14$regiao[enade14$regiao == 2] = "Nordeste"
+enade14$regiao[enade14$regiao == 3] = "Sudeste"
+enade14$regiao[enade14$regiao == 4] = "Sul"
+enade14$regiao[enade14$regiao == 5] = "C.O."
+
+freq(enade14$regiao[!is.na(enade14$regiao)], 
+     col="#FF0088", 
+     main = "Distribuição de alunos por região do país - ENADE 2014")
+
+
+```
+
+6.  Vamos investigar a associação entre a renda e a cor. Faça uma tabela
+cruzada entre essas duas variáveis.
+
+```{r}
+
+enade14$coraca <- enade14$qe_i2  
+enade14$coraca[enade14$coraca == "a"] <- "1 - Brancos"
+enade14$coraca[enade14$coraca == "b"] <- "2 - Negros"
+enade14$coraca[enade14$coraca == "c"] <- "3 - Pardos"
+enade14$coraca[enade14$coraca == "d"] <- "4 - Amarelos"
+enade14$coraca[enade14$coraca == "e"] <- "5 - Indígenas"
+
+enade14$renda <- enade14$qe_i8
+enade14$renda[enade14$renda == "a"] <- "Até 1,5"
+enade14$renda[enade14$renda == "b"] <- "1,5 a 3"
+enade14$renda[enade14$renda == "c"] <- "3 a 4,5"
+enade14$renda[enade14$renda == "d"] <- "4,5 a 6"
+enade14$renda[enade14$renda == "e"] <- "6 a 10"
+enade14$renda[enade14$renda == "f"] <- "10 a 30"
+enade14$renda[enade14$renda == "g"] <- "30+"
+
+correnda <- table(enade14$coraca, enade14$renda)
+correnda
+
+```
+
+# Desafios:
+
+1.  Guarde a tabela que vc programou no **exercício 6** num objeto.
+Existe algum teste estatístico para sabermos se existe associação
+entre essas variáveis? Rode o teste e apresente os resultados.
+(nível *easy*)
+
+```{r}
+
+correnda1 = chisq.test(correnda, correct = F)
+correnda1
+
+```
+
+2.  Comente os resultados (nível *medium*)
+
+R: Como testamos o nível de associação de variáveis categóricas, vamos usar o teste qui-quadrado. Nós vemos no resultado que o p-value é menor que o nível de significância 0,05 e que temos um alto valor para o qui-quadrado. Portanto, rejeitamos a hipóstese nula e concluimos que a renda e a cor/raça têm uma associação significante.
+
+3.  Verifique a variável categoria administrativa da IES no dicionário
+de variáveis. Recategorize a variável em uma binária: “Pública e
+Privada”. Crie uma nova variável para armezenar esses dados. (nível
+                                                              *hard*)
+```{r}
+
+enade14$ies_pub <- ifelse(enade14$co_catad == 93 |
+                     enade14$co_catad == 116 |
+                     enade14$co_catad == 10001 |
+                     enade14$co_catad == 10002 |
+                     enade14$co_catad == 10003, 1, 0)
+
+```
+
+4.  Você consegue descobrir qual foi a média da nota geral dos alunos de
+pedagogia do Izabela Hendrix no Enade 2014? (nível *Chuck Norris*)
+
+```{r}
+
+izabela <- enade14$nt_ger[enade14$co_ies == 216] 
+izabela_ped <- izabela[enade14$co_grupo == 2001] 
+mean(izabela_ped, na.rm = T)
+
+```
